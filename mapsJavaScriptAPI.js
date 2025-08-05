@@ -1,4 +1,5 @@
-var CROSproxyURL = 'https://whateverorigin.org/get?url=';
+var CORSproxyURL = ['https://whateverorigin.org/get?url=', 'https://api.allorigins.win/get?url='];
+var CORSproxyIndex = 0;
 
 var args = '';
 if (typeof language != 'undefined') args += '&language=' + language;
@@ -52,10 +53,11 @@ function sendRequestThroughCROSproxy(url, callback){
             if(this.status == 200){
                 if(callback) callback(JSON.parse(this.responseText).contents);
             }else{
+                CORSproxyIndex++;
                 sendRequestThroughCROSproxy(url, callback);//retry
             }
         }
     };
-    xhttp.open("GET", CROSproxyURL + encodeURIComponent(url), true);
+    xhttp.open("GET", CORSproxyURL[CORSproxyIndex%CORSproxyURL.length] + encodeURIComponent(url), true);
     xhttp.send();
 }
